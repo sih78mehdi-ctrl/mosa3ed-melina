@@ -16,7 +16,7 @@ back.onclick=()=>{
   if(testActive){testActive=null;rstopMic()}   /* التسميع محفوظ تلقائيًا فلا يحتاج تأكيدًا */
   hist.pop();show()};
 who.onclick=()=>{if(testActive&&testActive.type==='quiz'&&!confirm('ستُلغى كل إجاباتك. هل تريد تبديل الطفل؟'))return;testActive=null;try{rstopMic()}catch(e){}pickKid()};
-const PAL={hist:'#FF9F1C',geo:'#0FB5A6',civ:'#6C4DF6',isl:'#22B35E'},ICON={hist:'📜',geo:'🌍',civ:'🏛️',isl:'🕌'};
+const PAL={hist:'#FF9F1C',geo:'#0FB5A6',sci:'#6C4DF6',isl:'#22B35E'},ICON={hist:'📜',geo:'🌍',sci:'🔬',isl:'🕌'};
 const PRAISE=['أحسنت!','ممتاز!','رائع!','يا بطل!','مذهل!'],OOPS=['لا بأس، تعلّم منها!','قريبًا تصيبها!','حاول في الجولة القادمة!'];
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const st=()=>store.get('st',{xp:0,day:'',streak:0}),lvl=x=>Math.floor(x/100)+1;
