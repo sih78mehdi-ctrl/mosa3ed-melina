@@ -16,7 +16,7 @@ back.onclick=()=>{
   if(testActive){testActive=null;rstopMic()}   /* التسميع محفوظ تلقائيًا فلا يحتاج تأكيدًا */
   hist.pop();show()};
 who.onclick=()=>{if(testActive&&testActive.type==='quiz'&&!confirm('ستُلغى كل إجاباتك. هل تريد تبديل الطفل؟'))return;testActive=null;try{rstopMic()}catch(e){}pickKid()};
-const PAL={hist:'#FF9F1C',geo:'#0FB5A6',sci:'#6C4DF6',isl:'#22B35E'},ICON={hist:'📜',geo:'🌍',sci:'🔬',isl:'🕌'};
+const PAL={hist:'#FF9F1C',geo:'#0FB5A6',civ:'#6C4DF6',isl:'#22B35E',sci:'#F43F5E'},ICON={hist:'📜',geo:'🌍',civ:'🏛️',isl:'🕌',sci:'🔬'};
 const PRAISE=['أحسنت!','ممتاز!','رائع!','يا بطل!','مذهل!'],OOPS=['لا بأس، تعلّم منها!','قريبًا تصيبها!','حاول في الجولة القادمة!'];
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const st=()=>store.get('st',{xp:0,day:'',streak:0}),lvl=x=>Math.floor(x/100)+1;
@@ -40,22 +40,15 @@ document.addEventListener('click',e=>{if(e.target.closest('.btn,.tile,.node,#bac
 
 /* اختيار الطفل */
 function pickKid(){
-  kid=null;hist=[];back.hidden=true;who.textContent='';color('#6C4DF6');ttl.textContent='مساعد ميلينا';
+  kid=null;hist=[];back.hidden=true;who.textContent='';color('#6C4DF6');ttl.textContent='مساعد إياد';
   app.innerHTML=`<div class="res"><h2>من سيدرس اليوم؟</h2></div><div class="tiles">`+KIDS.map(k=>`<div class="tile" style="--c:${k.color}" data-id="${k.id}"><span class="em">${k.emoji}</span><b>${esc(k.name)}</b></div>`).join('')+'</div>';
   app.querySelectorAll('.tile').forEach(e=>e.onclick=()=>enter(e.dataset.id));
 }
 function enter(id){
   kid=KIDS.find(k=>k.id===id);if(!kid)return pickKid();
   localStorage.setItem('kid',JSON.stringify(id));
-  /* دروس استُبدل محتواها: يُمسح تقدّمها القديم مرة واحدة فقط */
-  try{const rv=store.get('lrv',{});let ch=false;
-    Object.entries(window.LESSON_RESET||{}).forEach(([lid,v])=>{if(rv[lid]===v)return;
-      ['prog','bt','rnd','recv'].forEach(k=>{const o=store.get(k,null);if(o&&o[lid]!==undefined){delete o[lid];store.set(k,o)}});
-      const lt=store.get('leftTest',null);if(lt&&lt.lid===lid)localStorage.removeItem(kkey('leftTest'));
-      rv[lid]=v;ch=true});
-    if(ch)store.set('lrv',rv)}catch(e){}
-  window.SUBJECTS=SUBJECT_LIST.map(([sid,name])=>({id:sid,name,color:PAL[sid],sections:kid.subjects[sid]||[]}));
-  who.textContent=kid.emoji;hist=[];go(home,'مساعد ميلينا');
+  window.SUBJECTS=SUBJECT_LIST.filter(([sid])=>kid.subjects[sid]).map(([sid,name])=>({id:sid,name,color:PAL[sid],sections:kid.subjects[sid]||[]}));
+  who.textContent=kid.emoji;hist=[];go(home,'مساعد إياد');
 }
 function home(){
   const t=st(),p=prog(),total=Object.values(p).reduce((x,r)=>x+stars(r.pct),0);
@@ -164,10 +157,10 @@ function showLeft(){
   localStorage.removeItem(kkey('leftTest'));
   const s=SUBJECTS.find(x=>x.id===L.sid),l=s&&s.sections.flatMap(x=>x.lessons).find(x=>x.id===L.lid),q=L.type==='quiz',w=q?'الاختبار':'التسميع';
   app.innerHTML=`<div class="res"><div class="big">⚠️</div><h2 style="font-size:34px">غادرتَ الصفحة أثناء ${w}</h2><p>أُلغيت جميع إجاباتك${q?'':' في هذه الجولة'} وسيبدأ ${w} من الصفر.</p><div class="acts"><div class="btn" id="rs0">ابدأ من جديد 🔄</div></div><div class="acts"><div class="btn alt" id="hm">الدروس</div></div></div>`;
-  $('#hm').onclick=()=>{hist=[];go(home,'مساعد ميلينا')};
+  $('#hm').onclick=()=>{hist=[];go(home,'مساعد إياد')};
   $('#rs0').onclick=()=>{
-    if(!s||!l){hist=[];go(home,'مساعد ميلينا');return}
-    hist=[[home,'مساعد ميلينا'],[()=>subject(s),s.name,s.color],[()=>lesson(s,l),l.title,s.color]];
+    if(!s||!l){hist=[];go(home,'مساعد إياد');return}
+    hist=[[home,'مساعد إياد'],[()=>subject(s),s.name,s.color],[()=>lesson(s,l),l.title,s.color]];
     go(()=>q?quiz(s,l):recite(s,l),l.title,s.color)};
 }
 document.addEventListener('visibilitychange',()=>{document.hidden?leftTest():showLeft()});
